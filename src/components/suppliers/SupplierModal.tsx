@@ -10,9 +10,10 @@ interface SupplierModalProps {
   mode: 'create' | 'edit' | 'view';
   onClose: () => void;
   currency: 'PEN' | 'USD';
+  onSave: (supplier: Supplier) => Promise<void>; 
 }
 
-const SupplierModal: React.FC<SupplierModalProps> = ({ supplier, mode, onClose, currency }) => {
+const SupplierModal: React.FC<SupplierModalProps> = ({ supplier, mode, onClose, currency, onSave }) => {
   const [formData, setFormData] = useState({
     name: supplier?.name || '',
     ruc: supplier?.ruc || '',
@@ -38,21 +39,45 @@ const SupplierModal: React.FC<SupplierModalProps> = ({ supplier, mode, onClose, 
     })}`;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    setLoading(false);
+ const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setLoading(true);
+
+  const supplierData: Supplier = {
+    id: supplier?.id || 0, // 0 temporal al crear
+    name: formData.name,
+    ruc: formData.ruc,
+    sector: formData.sector,
+    status: formData.status as 'Activo' | 'En evaluación' | 'Suspendido',
+    registrationDate: supplier?.registrationDate || new Date().toISOString(),
+    lastOrder: supplier?.lastOrder || null,
+    totalBilled: supplier?.totalBilled || 0,
+    currency: currency, // 'PEN' o 'USD'
+    contact: {
+      phone: formData.phone,
+      email: formData.email,
+      address: formData.address,
+    },
+    representative: formData.representative,
+  };
+
+  try {
+    await onSave(supplierData); 
     setShowToast(true);
-    
+
     setTimeout(() => {
       setShowToast(false);
       onClose();
     }, 2000);
-  };
+  } catch (error) {
+    console.error("Error guardando proveedor:", error);
+    alert("Error al guardar el proveedor. Verifica la conexión con el servidor.");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));

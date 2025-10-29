@@ -21,9 +21,11 @@ interface SupplierTableProps {
   currency: 'PEN' | 'USD';
   filters: SupplierFilters;
   onFilterChange: (filters: Partial<SupplierFilters>) => void;
-  onSupplierSelect: (supplier: Supplier) => void;
+  onSupplierSelect: (supplier: Supplier) => void; 
   onCreateSupplier: () => void;
-  onEditSupplier: (supplier: Supplier) => void;
+  onEditSupplier: (supplier: Supplier) => void;  
+  onDeleteSupplier: (id: number) => void;    
+  onSuspendSupplier?: (supplier: Supplier) => void;     
 }
 
 const SupplierTable: React.FC<SupplierTableProps> = ({
@@ -33,22 +35,29 @@ const SupplierTable: React.FC<SupplierTableProps> = ({
   onFilterChange,
   onSupplierSelect,
   onCreateSupplier,
-  onEditSupplier
+  onEditSupplier,
+  onDeleteSupplier,
+  onSuspendSupplier,
 }) => {
-  const [selectedSuppliers, setSelectedSuppliers] = useState<string[]>([]);
-  const [showActionsMenu, setShowActionsMenu] = useState<string | null>(null);
+  const [selectedSuppliers, setSelectedSuppliers] = useState<number[]>([]);
+  const [showActionsMenu, setShowActionsMenu] = useState<number | null>(null);
   const [showToast, setShowToast] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  const formatAmount = (amount: number) => {
-    const value = currency === 'USD' ? amount / EXCHANGE_RATE : amount;
-    const symbol = currency === 'USD' ? '$' : 'S/';
-    return `${symbol}${value.toLocaleString('es-PE', { 
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2 
-    })}`;
-  };
+  const formatAmount = (amount?: number) => {
+  if (typeof amount !== 'number' || isNaN(amount)) {
+    return currency === 'USD' ? '$0.00' : 'S/0.00';
+  }
+
+  const value = currency === 'USD' ? amount / EXCHANGE_RATE : amount;
+  const symbol = currency === 'USD' ? '$' : 'S/';
+
+  return `${symbol}${value.toLocaleString('es-PE', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })}`;
+};
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -71,13 +80,13 @@ const SupplierTable: React.FC<SupplierTableProps> = ({
     }
   };
 
-  const handleSelectSupplier = (supplierId: string) => {
-    setSelectedSuppliers(prev => 
-      prev.includes(supplierId) 
-        ? prev.filter(id => id !== supplierId)
-        : [...prev, supplierId]
-    );
-  };
+  const handleSelectSupplier = (supplierId: number) => {
+  setSelectedSuppliers(prev => 
+    prev.includes(supplierId) 
+      ? prev.filter(id => id !== supplierId)
+      : [...prev, supplierId]
+  );
+};
 
   const handleAction = async (action: string, supplier?: Supplier) => {
     setShowActionsMenu(null);
@@ -255,7 +264,9 @@ const SupplierTable: React.FC<SupplierTableProps> = ({
                     </span>
                   </td>
                   <td className="py-3 px-4 text-gray-600">
-                    {format(new Date(supplier.registrationDate), 'dd MMM yyyy', { locale: es })}
+                    {supplier.registrationDate
+                      ? format(new Date(supplier.registrationDate), 'dd MMM yyyy', { locale: es })
+                      : '—'}
                   </td>
                   <td className="py-3 px-4 text-gray-600">
                     {supplier.lastOrder 
@@ -303,17 +314,22 @@ const SupplierTable: React.FC<SupplierTableProps> = ({
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleAction('suspend', supplier);
+                              if (onSuspendSupplier) {
+                                onSuspendSupplier(supplier); // 👈 Llama a la función del padre
+                              } else {
+                                handleAction('suspend', supplier); // 👈 Si no se pasó prop, muestra el toast
+                              }
                             }}
                             className="w-full text-left px-4 py-2 text-sm text-yellow-600 hover:bg-gray-100 flex items-center space-x-2"
                           >
                             <Pause size={16} />
                             <span>Suspender</span>
                           </button>
+
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleAction('delete', supplier);
+                              onDeleteSupplier(Number(supplier.id)); 
                             }}
                             className="w-full text-left px-4 py-2 text-sm text-alert hover:bg-gray-100 flex items-center space-x-2"
                           >

@@ -90,6 +90,25 @@ const OrdenesCompra: React.FC = () => {
     setShowCreateModal(false);
   };
 
+  const handleCreateOrderSubmit = async (orderData: any) => {
+    console.log("Orden creada:", orderData);
+
+    try {
+      // Si luego conectas con tu backend:
+      /*
+      await fetch('http://localhost:5000/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData),
+      });
+      */
+    } catch (error) {
+      console.error("Error al crear orden:", error);
+    }
+
+    setShowCreateModal(false);
+  };
+
   return (
     <div className="space-y-6">
       {/* Header Controls */}
@@ -145,6 +164,7 @@ const OrdenesCompra: React.FC = () => {
         <CreateOrderModal
           currency={selectedCurrency}
           onClose={handleCloseCreateModal}
+           onSubmit={handleCreateOrderSubmit}
         />
       )}
     </div>

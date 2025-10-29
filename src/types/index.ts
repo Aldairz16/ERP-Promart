@@ -52,7 +52,7 @@ export interface Currency {
 }
 
 export interface Supplier {
-  id: string;
+  id: number;
   name: string;
   ruc: string;
   sector: string;
