@@ -1,12 +1,19 @@
 import React from 'react';
 import { TrendingUp, TrendingDown } from 'lucide-react';
-import { supplierKPIs, EXCHANGE_RATE } from '../../data/mockData';
+//import { supplierKPIs, EXCHANGE_RATE } from '../../data/mockData';
+import { EXCHANGE_RATE } from '../../data/mockData';
 
 interface SupplierOverviewProps {
   currency: 'PEN' | 'USD';
+  stats: {
+    total: number;
+    activos: number;
+    suspendidos: number;
+    nuevosMes: number;
+  };
 }
 
-const SupplierOverview: React.FC<SupplierOverviewProps> = ({ currency }) => {
+const SupplierOverview: React.FC<SupplierOverviewProps> = ({ currency, stats }) => {
   const formatValue = (value: string, isAmount: boolean = false) => {
     if (!isAmount) return value;
     
@@ -33,11 +40,11 @@ const SupplierOverview: React.FC<SupplierOverviewProps> = ({ currency }) => {
   };
 
   const kpiArray = [
-    supplierKPIs.totalSuppliers,
-    supplierKPIs.activeSuppliers,
-    supplierKPIs.suspendedSuppliers,
-    supplierKPIs.newSuppliers
-  ];
+  { title: "Total Proveedores", value: stats.total.toString(), caption: "", trend: null },
+  { title: "Activos", value: stats.activos.toString(), caption: "", trend: null },
+  { title: "Suspendidos", value: stats.suspendidos.toString(), caption: "", trend: null },
+  { title: "Nuevos este mes", value: stats.nuevosMes.toString(), caption: "", trend: null },
+];
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
@@ -59,6 +66,8 @@ const SupplierOverview: React.FC<SupplierOverviewProps> = ({ currency }) => {
             </div>
           </div>
           
+          {/*Comentario */}
+          {/*
           {kpi.trend && (
             <div className="flex items-center space-x-1">
               {renderTrendIcon(kpi.trend.direction)}
@@ -74,6 +83,7 @@ const SupplierOverview: React.FC<SupplierOverviewProps> = ({ currency }) => {
               </span>
             </div>
           )}
+          */}
         </div>
       ))}
     </div>

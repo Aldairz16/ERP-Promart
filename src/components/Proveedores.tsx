@@ -21,6 +21,14 @@ const Proveedores: React.FC = () => {
     dateRange: 'Todos'
   });
 
+  // 🔹 Estado para estadísticas de proveedores
+  const [stats, setStats] = useState({
+    total: 0,
+    activos: 0,
+    suspendidos: 0,
+    nuevosMes: 0,
+  });
+
   // 🔹 Cargar proveedores desde la BD
   const fetchSuppliers = async () => {
     const res = await fetch(API_URL);
@@ -29,37 +37,58 @@ const Proveedores: React.FC = () => {
     // 🔁 Convertimos los nombres de campos al formato que espera el frontend
   const mappedData = data.map((item: any) => ({
     id: item.id,
-    name: item.proveedor,            
+    name: item.proveedor,
     ruc: item.ruc,
     sector: item.sector,
     status: item.estado,
     registrationDate: item.fecha_registro,
     lastOrder: item.ultima_orden,
-    totalBilled: item.total_facturado,
-    representative: item.representante || "", 
+    totalBilled: Number(item.total_facturado) || 0, 
+    representative: item.representante || '',
+    contact: {
+      phone: item.telefono || '',
+      email: item.email || '',
+      address: item.direccion || '',
+    },
   }));
 
-    setSuppliers(mappedData);
+  // 🔹 Guardamos los proveedores
+  setSuppliers(mappedData);
   setFilteredSuppliers(mappedData);
-  };
 
-  useEffect(() => {
-    fetchSuppliers();
-  }, []);
+  // 🔹 Actualizamos estadísticas
+  setStats({
+    total: mappedData.length,
+    activos: mappedData.filter((s: Supplier) => s.status === 'Activo').length,
+    suspendidos: mappedData.filter((s: Supplier) => s.status === 'Suspendido').length,
+    nuevosMes: mappedData.filter((s: Supplier) => {
+      const month = new Date(s.registrationDate).getMonth();
+      return month === new Date().getMonth();
+    }).length,
+  });
+};
+
+useEffect(() => {
+  fetchSuppliers();
+}, []);
 
   // 🔹 Crear proveedor
 const handleSaveSupplier = async (newSupplier: Supplier) => {
   console.log("📦 Enviando proveedor:", newSupplier);
 
   const supplierData = {
-      proveedor: newSupplier.name,
-      ruc: newSupplier.ruc,
-      sector: newSupplier.sector,
-      estado: newSupplier.status,
-      fecha_registro: new Date().toISOString().split('T')[0], // Fecha actual (YYYY-MM-DD)
-      ultima_orden: new Date().toISOString().split('T')[0],
-      total_facturado: 0 // Valor inicial
-    };
+  proveedor: newSupplier.name,
+  ruc: newSupplier.ruc,
+  sector: newSupplier.sector,
+  estado: newSupplier.status,
+  fecha_registro: new Date().toISOString().split('T')[0],
+  ultima_orden: new Date().toISOString().split('T')[0],
+  total_facturado: newSupplier.totalBilled || 0,
+  representante: newSupplier.representative,
+  telefono: newSupplier.contact.phone,
+  email: newSupplier.contact.email,
+  direccion: newSupplier.contact.address,
+};
 
     await fetch(API_URL, {
       method: "POST",
@@ -73,30 +102,32 @@ const handleSaveSupplier = async (newSupplier: Supplier) => {
 
   // 🔹 Editar proveedor
       const handleEditSupplier = async (supplier: Supplier) => {
-        console.log("✏️ Editando proveedor:", supplier);
+          const supplierData = {
+            proveedor: supplier.name,
+            ruc: supplier.ruc,
+            sector: supplier.sector,
+            estado: supplier.status,
+            representante: supplier.representative,       
+            telefono: supplier.contact.phone,            
+            email: supplier.contact.email,               
+            direccion: supplier.contact.address,       
+            fecha_registro: supplier.registrationDate
+              ? new Date(supplier.registrationDate).toISOString().split('T')[0]
+              : new Date().toISOString().split('T')[0],
+            ultima_orden: supplier.lastOrder
+              ? new Date(supplier.lastOrder).toISOString().split('T')[0]
+              : new Date().toISOString().split('T')[0],
+            total_facturado: supplier.totalBilled || 0,
+          };
 
-        const supplierData = {
-          proveedor: supplier.name,
-          ruc: supplier.ruc,
-          sector: supplier.sector,
-          estado: supplier.status,
-          fecha_registro: supplier.registrationDate
-            ? new Date(supplier.registrationDate).toISOString().split('T')[0]
-            : new Date().toISOString().split('T')[0],
-          ultima_orden: supplier.lastOrder
-            ? new Date(supplier.lastOrder).toISOString().split('T')[0]
-            : new Date().toISOString().split('T')[0],
-          total_facturado: supplier.totalBilled || 0,
+          await fetch(`${API_URL}/${supplier.id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(supplierData),
+          });
+
+          await fetchSuppliers(); // 🔄 Refresca la tabla
         };
-
-        await fetch(`${API_URL}/${supplier.id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(supplierData),
-        });
-
-        await fetchSuppliers(); // 🔄 Refresca la tabla
-      };
 
       // 🔹 Eliminar proveedor
       const handleDeleteSupplier = async (id: number) => {
@@ -106,25 +137,25 @@ const handleSaveSupplier = async (newSupplier: Supplier) => {
 
 
       // 🔹 Suspender proveedor
-const handleSuspendSupplier = async (supplier: Supplier) => {
-  const updatedSupplier = { ...supplier, status: "Suspendido" };
+      const handleSuspendSupplier = async (supplier: Supplier) => {
+        const updatedSupplier = { ...supplier, status: "Suspendido" };
 
-  await fetch(`${API_URL}/${supplier.id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      proveedor: supplier.name,
-      ruc: supplier.ruc,
-      sector: supplier.sector,
-      estado: "Suspendido", // 👈 Cambia el estado
-      fecha_registro: supplier.registrationDate,
-      ultima_orden: supplier.lastOrder,
-      total_facturado: supplier.totalBilled,
-    }),
-  });
+        await fetch(`${API_URL}/${supplier.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            proveedor: supplier.name,
+            ruc: supplier.ruc,
+            sector: supplier.sector,
+            estado: "Suspendido", // 👈 Cambia el estado
+            fecha_registro: supplier.registrationDate,
+            ultima_orden: supplier.lastOrder,
+            total_facturado: supplier.totalBilled,
+          }),
+        });
 
-  await fetchSuppliers(); // 🔄 refresca la tabla
-};
+        await fetchSuppliers(); // 🔄 refresca la tabla
+      };
 
   // 🔹 Filtrado
   const handleFilterChange = (newFilters: Partial<SupplierFilters>) => {
@@ -190,7 +221,7 @@ const handleSuspendSupplier = async (supplier: Supplier) => {
         />
       </div>
 
-      <SupplierOverview currency={selectedCurrency} />
+      <SupplierOverview currency={selectedCurrency} stats={stats} />
 
       <SupplierTable
         suppliers={filteredSuppliers}
@@ -201,6 +232,7 @@ const handleSuspendSupplier = async (supplier: Supplier) => {
         onCreateSupplier={handleCreateSupplier}
         onEditSupplier={handleOpenEditSupplier}
         onDeleteSupplier={handleDeleteSupplier} 
+        onSuspendSupplier={handleSuspendSupplier}
       />
 
       {showModal && (

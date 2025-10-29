@@ -13,19 +13,24 @@ export const ProveedorModel = {
 
   async crear(data) {
     const {
-      proveedor,
-      ruc,
-      sector,
-      estado,
-      fecha_registro,
-      ultima_orden,
-      total_facturado
+      proveedor, 
+      ruc, 
+      sector, 
+      estado, 
+      fecha_registro, 
+      ultima_orden, 
+      total_facturado, 
+      representante, 
+      telefono, 
+      email, 
+      direccion 
     } = data;
 
     const query = `
-      INSERT INTO proveedores (proveedor, ruc, sector, estado, fecha_registro, ultima_orden, total_facturado)
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
-      RETURNING *;
+      INSERT INTO proveedores
+    (proveedor, ruc, sector, estado, fecha_registro, ultima_orden, total_facturado, representante, telefono, email, direccion)
+    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
+    RETURNING *;
     `;
 
     const values = [
@@ -35,7 +40,11 @@ export const ProveedorModel = {
       estado,
       fecha_registro,
       ultima_orden,
-      total_facturado
+      total_facturado, 
+      representante, 
+      telefono,
+      email, 
+      direccion
     ];
 
     const result = await pool.query(query, values);
@@ -44,21 +53,27 @@ export const ProveedorModel = {
 
   async actualizar(id, data) {
     const {
-      proveedor,
-      ruc,
-      sector,
-      estado,
-      fecha_registro,
-      ultima_orden,
-      total_facturado
+      proveedor, 
+      ruc, 
+      sector, 
+      estado, 
+      fecha_registro, 
+      ultima_orden, 
+      total_facturado, 
+      representante, 
+      telefono, 
+      email, 
+      direccion 
     } = data;
 
-    const query = `
-      UPDATE proveedores
-      SET proveedor=$1, ruc=$2, sector=$3, estado=$4, fecha_registro=$5, ultima_orden=$6, total_facturado=$7
-      WHERE id=$8
-      RETURNING *;
-    `;
+     const query = `
+    UPDATE proveedores
+    SET proveedor=$1, ruc=$2, sector=$3, estado=$4, fecha_registro=$5,
+        ultima_orden=$6, total_facturado=$7, representante=$8, telefono=$9, 
+        email=$10, direccion=$11
+    WHERE id=$12
+    RETURNING *;
+  `;
 
     const values = [
       proveedor,
@@ -67,7 +82,11 @@ export const ProveedorModel = {
       estado,
       fecha_registro,
       ultima_orden,
-      total_facturado,
+      total_facturado, 
+      representante, 
+      telefono,
+      email, 
+      direccion,
       id
     ];
 

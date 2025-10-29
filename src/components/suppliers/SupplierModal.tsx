@@ -15,15 +15,16 @@ interface SupplierModalProps {
 
 const SupplierModal: React.FC<SupplierModalProps> = ({ supplier, mode, onClose, currency, onSave }) => {
   const [formData, setFormData] = useState({
-    name: supplier?.name || '',
-    ruc: supplier?.ruc || '',
-    sector: supplier?.sector || '',
-    representative: supplier?.representative || '',
-    phone: supplier?.contact.phone || '',
-    email: supplier?.contact.email || '',
-    address: supplier?.contact.address || '',
-    status: supplier?.status || 'En evaluación'
-  });
+      name: supplier?.name || '',
+      ruc: supplier?.ruc || '',
+      sector: supplier?.sector || '',
+      representative: supplier?.representative || '',  
+      phone: supplier?.contact?.phone || '',          
+      email: supplier?.contact?.email || '',           
+      address: supplier?.contact?.address || '',       
+      status: supplier?.status || 'En evaluación',
+      totalBilled: supplier?.totalBilled || 0,
+    });
   const [loading, setLoading] = useState(false);
   const [showToast, setShowToast] = useState(false);
 
@@ -51,7 +52,7 @@ const SupplierModal: React.FC<SupplierModalProps> = ({ supplier, mode, onClose, 
     status: formData.status as 'Activo' | 'En evaluación' | 'Suspendido',
     registrationDate: supplier?.registrationDate || new Date().toISOString(),
     lastOrder: supplier?.lastOrder || null,
-    totalBilled: supplier?.totalBilled || 0,
+    totalBilled: Number(formData.totalBilled),
     currency: currency, // 'PEN' o 'USD'
     contact: {
       phone: formData.phone,
@@ -186,23 +187,40 @@ const SupplierModal: React.FC<SupplierModalProps> = ({ supplier, mode, onClose, 
                     />
                   </div>
                   
-                  {!isCreating && (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Estado
-                      </label>
-                      <select
-                        value={formData.status}
-                        onChange={(e) => handleInputChange('status', e.target.value)}
-                        disabled={isReadOnly}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-main disabled:bg-gray-50"
-                      >
-                        <option value="Activo">Activo</option>
-                        <option value="En evaluación">En evaluación</option>
-                        <option value="Suspendido">Suspendido</option>
-                      </select>
-                    </div>
-                  )}
+                  {!isReadOnly && (
+                      <div className="space-y-4">
+                        {/* Estado */}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Estado
+                          </label>
+                          <select
+                            value={formData.status}
+                            onChange={(e) => handleInputChange('status', e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-main"
+                          >
+                            <option value="Activo">Activo</option>
+                            <option value="En evaluación">En evaluación</option>
+                            <option value="Suspendido">Suspendido</option>
+                          </select>
+                        </div>
+
+                        {/* Total Facturado */}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Total Facturado
+                          </label>
+                          <input
+                            type="number"
+                            min={0}
+                            step="0.01"
+                            value={formData.totalBilled}
+                            onChange={(e) => handleInputChange('totalBilled', e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-main"
+                          />
+                        </div>
+                      </div>
+                    )}
                 </div>
               </div>
             </div>

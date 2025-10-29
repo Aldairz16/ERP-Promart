@@ -306,7 +306,7 @@ const SupplierTable: React.FC<SupplierTableProps> = ({
                               e.stopPropagation();
                               onEditSupplier(supplier);
                             }}
-                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-2"
+                            className="text-sm text-gray-700 hover:bg-gray-100 px-4 py-2 rounded flex items-center space-x-2"
                           >
                             <Edit size={16} />
                             <span>Editar</span>
@@ -315,9 +315,9 @@ const SupplierTable: React.FC<SupplierTableProps> = ({
                             onClick={(e) => {
                               e.stopPropagation();
                               if (onSuspendSupplier) {
-                                onSuspendSupplier(supplier); // 👈 Llama a la función del padre
+                                onSuspendSupplier(supplier); 
                               } else {
-                                handleAction('suspend', supplier); // 👈 Si no se pasó prop, muestra el toast
+                                handleAction('suspend', supplier); 
                               }
                             }}
                             className="w-full text-left px-4 py-2 text-sm text-yellow-600 hover:bg-gray-100 flex items-center space-x-2"
