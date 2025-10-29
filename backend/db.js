@@ -3,11 +3,11 @@ const { Pool } = pkg;
 
 // Configura la conexión a tu base de datos PostgreSQL
 const pool = new Pool({
-  user: 'postgres',       // Tu usuario de PostgreSQL
-  host: 'localhost',      // Servidor local
-  database: 'ERP_Promart', // Nombre de tu base de datos
-  password: 'lopezmoreno', // Tu contraseña de PostgreSQL
-  port: 5432,             // Puerto por defecto de PostgreSQL
+  user: 'postgres',       
+  host: 'localhost',      
+  database: 'ERP_Promart', 
+  password: 'lopezmoreno', 
+  port: 5432,             
 });
 
 // Prueba la conexión
