@@ -116,4 +116,4 @@ const OrderOverview: React.FC<OrderOverviewProps> = ({ period, currency, kpis })
   );
 };
 
-export default OrderOverview;
+export default OrderOverview ;
