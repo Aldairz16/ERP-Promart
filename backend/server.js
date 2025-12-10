@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import proveedorRoutes from "./routes/proveedorRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js"; // <--- NUEVO
 import { pool } from "./config/connection.js";
+import reportRoutes from "./routes/reportRoutes.js"; // <-- NUEVO
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ app.use(express.json());
 // RUTAS
 app.use("/api/proveedores", proveedorRoutes);
 app.use("/api/orders", orderRoutes); // <--- NUEVO
+app.use("/api/reports", reportRoutes); // <-- NUEVO ENDPOINT PARA REPORTES
 
 // Verificar conexión a PostgreSQL
 pool.connect()
