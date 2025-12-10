@@ -2,7 +2,10 @@
   "name": "backend",
   "version": "1.0.0",
   "main": "server.js",
+<<<<<<< HEAD
   "type": "module",
+=======
+>>>>>>> 87921f61849e3e0eb14846645dbdd687c465f7c5
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"

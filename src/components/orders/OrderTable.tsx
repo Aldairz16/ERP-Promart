@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 // src/components/orders/OrderTable.tsx
+=======
+>>>>>>> 87921f61849e3e0eb14846645dbdd687c465f7c5
 import React, { useState } from 'react';
 import { 
   Search, 
@@ -20,9 +23,12 @@ import { warehouses, categories, EXCHANGE_RATE } from '../../data/mockData';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
+<<<<<<< HEAD
 // URL base de tu backend para las acciones
 const API_URL = 'http://localhost:4000/api'; 
 
+=======
+>>>>>>> 87921f61849e3e0eb14846645dbdd687c465f7c5
 interface OrderTableProps {
   orders: PurchaseOrder[];
   currency: 'PEN' | 'USD';
@@ -30,10 +36,13 @@ interface OrderTableProps {
   onFilterChange: (filters: Partial<OrderFilters>) => void;
   onOrderSelect: (order: PurchaseOrder) => void;
   onCreateOrder: () => void;
+<<<<<<< HEAD
   allSuppliers: string[];
   onDataUpdate: () => void; 
   onDuplicateOrder: (order: PurchaseOrder) => void; 
   onEditOrder: (order: PurchaseOrder) => void; // <-- Propiedad clave para la edición
+=======
+>>>>>>> 87921f61849e3e0eb14846645dbdd687c465f7c5
 }
 
 const OrderTable: React.FC<OrderTableProps> = ({
@@ -42,11 +51,15 @@ const OrderTable: React.FC<OrderTableProps> = ({
   filters,
   onFilterChange,
   onOrderSelect,
+<<<<<<< HEAD
   onCreateOrder,
   allSuppliers,
   onDataUpdate,
   onDuplicateOrder,
   onEditOrder // <-- Usada para Editar
+=======
+  onCreateOrder
+>>>>>>> 87921f61849e3e0eb14846645dbdd687c465f7c5
 }) => {
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
   const [showActionsMenu, setShowActionsMenu] = useState<string | null>(null);
@@ -104,6 +117,7 @@ const OrderTable: React.FC<OrderTableProps> = ({
 
   const handleAction = async (action: string, order?: PurchaseOrder) => {
     setShowActionsMenu(null);
+<<<<<<< HEAD
     let message = '';
     let success = false;
     const orderId = order?.id;
@@ -191,6 +205,44 @@ const OrderTable: React.FC<OrderTableProps> = ({
   };
 
   const uniqueSuppliers = allSuppliers;
+=======
+    
+    // Simulate loading
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    let message = '';
+    switch (action) {
+      case 'duplicate':
+        message = `Orden ${order?.id} duplicada exitosamente`;
+        break;
+      case 'download':
+        message = `PDF de orden ${order?.id} descargado`;
+        break;
+      case 'cancel':
+        message = `Orden ${order?.id} anulada exitosamente`;
+        break;
+      case 'export':
+        message = 'Lista de órdenes exportada exitosamente';
+        break;
+      case 'bulk-approve':
+        message = `${selectedOrders.length} órdenes aprobadas`;
+        setSelectedOrders([]);
+        break;
+      case 'bulk-reject':
+        message = `${selectedOrders.length} órdenes rechazadas`;
+        setSelectedOrders([]);
+        break;
+      default:
+        message = 'Acción completada exitosamente';
+    }
+    
+    setShowToast(message);
+    setTimeout(() => setShowToast(null), 3000);
+  };
+
+  // Get unique suppliers for filter
+  const uniqueSuppliers = Array.from(new Set(orders.map(o => o.supplierName)));
+>>>>>>> 87921f61849e3e0eb14846645dbdd687c465f7c5
 
   // Pagination
   const totalPages = Math.ceil(orders.length / itemsPerPage);
@@ -233,7 +285,10 @@ const OrderTable: React.FC<OrderTableProps> = ({
               <option value="Anulada">Anulada</option>
             </select>
             
+<<<<<<< HEAD
             {/* Filtro Proveedor */}
+=======
+>>>>>>> 87921f61849e3e0eb14846645dbdd687c465f7c5
             <select
               value={filters.supplier}
               onChange={(e) => onFilterChange({ supplier: e.target.value })}
@@ -315,7 +370,11 @@ const OrderTable: React.FC<OrderTableProps> = ({
             <tr className="border-b border-gray-200">
               <th className="text-left py-3 px-4">
                 <button onClick={handleSelectAll} className="focus:outline-none">
+<<<<<<< HEAD
                   {selectedOrders.length === orders.length && orders.length > 0 ? (
+=======
+                  {selectedOrders.length === orders.length ? (
+>>>>>>> 87921f61849e3e0eb14846645dbdd687c465f7c5
                     <CheckSquare size={16} className="text-primary-main" />
                   ) : (
                     <Square size={16} className="text-gray-400" />
@@ -418,7 +477,11 @@ const OrderTable: React.FC<OrderTableProps> = ({
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
+<<<<<<< HEAD
                               handleAction('edit', order); // Acción EDITAR (funcional)
+=======
+                              // Handle edit
+>>>>>>> 87921f61849e3e0eb14846645dbdd687c465f7c5
                             }}
                             className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-2"
                           >
@@ -428,7 +491,11 @@ const OrderTable: React.FC<OrderTableProps> = ({
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
+<<<<<<< HEAD
                               handleAction('duplicate', order); // Acción DUPLICAR (funcional)
+=======
+                              handleAction('duplicate', order);
+>>>>>>> 87921f61849e3e0eb14846645dbdd687c465f7c5
                             }}
                             className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-2"
                           >
@@ -438,13 +505,18 @@ const OrderTable: React.FC<OrderTableProps> = ({
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
+<<<<<<< HEAD
                               handleAction('download', order); // Acción DESCARGAR PDF
+=======
+                              handleAction('download', order);
+>>>>>>> 87921f61849e3e0eb14846645dbdd687c465f7c5
                             }}
                             className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-2"
                           >
                             <FileText size={16} />
                             <span>Descargar PDF</span>
                           </button>
+<<<<<<< HEAD
                           
                           {/* Botón Anular (Cambia estado a 'Anulada') */}
                           <button
@@ -453,10 +525,19 @@ const OrderTable: React.FC<OrderTableProps> = ({
                               handleAction('cancel', order); // Acción ANULAR (real)
                             }}
                             className="w-full text-left px-4 py-2 text-sm text-alert hover:bg-gray-100 flex items-center space-x-2 border-t mt-1"
+=======
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAction('cancel', order);
+                            }}
+                            className="w-full text-left px-4 py-2 text-sm text-alert hover:bg-gray-100 flex items-center space-x-2"
+>>>>>>> 87921f61849e3e0eb14846645dbdd687c465f7c5
                           >
                             <Trash2 size={16} />
                             <span>Anular</span>
                           </button>
+<<<<<<< HEAD
                           
                           {/* Opción para eliminar permanente (solo si es Borrador) */}
                           {order.status === 'Borrador' && (
@@ -471,6 +552,8 @@ const OrderTable: React.FC<OrderTableProps> = ({
                                 <span>Eliminar Permanente</span>
                             </button>
                           )}
+=======
+>>>>>>> 87921f61849e3e0eb14846645dbdd687c465f7c5
                         </div>
                       )}
                     </div>

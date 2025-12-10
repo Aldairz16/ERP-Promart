@@ -9,6 +9,7 @@
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
+<<<<<<< HEAD
     "clsx": "^2.0.0",
     "date-fns": "^2.30.0",
     "dotenv": "^17.2.3",
@@ -16,6 +17,14 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "recharts": "^2.7.2"
+=======
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "lucide-react": "^0.263.1",
+    "recharts": "^2.7.2",
+    "date-fns": "^2.30.0",
+    "clsx": "^2.0.0"
+>>>>>>> 87921f61849e3e0eb14846645dbdd687c465f7c5
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
@@ -24,7 +33,10 @@
     "@typescript-eslint/parser": "^6.0.0",
     "@vitejs/plugin-react": "^4.0.3",
     "autoprefixer": "^10.4.14",
+<<<<<<< HEAD
     "baseline-browser-mapping": "^2.9.5",
+=======
+>>>>>>> 87921f61849e3e0eb14846645dbdd687c465f7c5
     "eslint": "^8.45.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
@@ -33,4 +45,8 @@
     "typescript": "^5.0.2",
     "vite": "^4.4.5"
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 87921f61849e3e0eb14846645dbdd687c465f7c5
