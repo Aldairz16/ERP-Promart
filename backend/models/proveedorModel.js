@@ -3,27 +3,22 @@ import { pool } from "../config/connection.js";
 export const ProveedorModel = {
   // Función llamada por ProveedorController.listar()
   async obtenerTodos() {
-    // 🛑 Columna crítica: Asegúrate de incluir TODAS las columnas usadas en el frontend
     const query = `
       SELECT 
-        id, proveedor, ruc, sector, estado, 
-        fecha_registro, telefono, email, direccion 
-      FROM proveedores 
+        id, proveedor, ruc, sector, estado, fecha_registro,
+        ultima_orden, total_facturado, representante,
+        telefono, email, direccion
+      FROM proveedores
       ORDER BY id ASC
     `;
     const { rows } = await pool.query(query);
     return rows;
   },
 
-  // Función llamada por ProveedorController.crear()
-  async crear({ ruc, proveedor, direccion, telefono, email, sector, estado = true }) {
-    const query = `
-      INSERT INTO proveedores (ruc, proveedor, direccion, telefono, email, sector, estado)
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
-      RETURNING *;
-    `;
-    const values = [ruc, proveedor, direccion, telefono, email, sector, estado];
-    const { rows } = await pool.query(query, values);
+  // Obtener proveedor por ID
+  async obtenerPorId(id) {
+    const query = "SELECT * FROM proveedores WHERE id = $1";
+    const { rows } = await pool.query(query, [id]);
     return rows[0];
   },
 
